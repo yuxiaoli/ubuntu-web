@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import $ from 'jquery';
-import ReactGA from 'react-ga4';
 
 export class Terminal extends Component {
     constructor() {
@@ -12,13 +11,11 @@ export class Terminal extends Component {
         this.prev_commands = [];
         this.commands_index = -1;
         this.child_directories = {
-            root: ["books", "projects", "personal-documents", "skills", "languages", "PDPU", "interests"],
-            PDPU: ["Sem-6"],
-            books: ["Eric-Jorgenson_The-Almanack-of-Naval-Ravikant.pdf", "Elon Musk: How the Billionaire CEO of SpaceX.pdf", "The $100 Startup_CHRIS_GUILLEBEAU.pdf", "The_Magic_of_Thinking_Big.pdf"],
-            skills: ["Front-end development", "React.js", "jQuery", "Flutter", "Express.js", "SQL", "Firebase"],
-            projects: ["vivek9patel-personal-portfolio", "synonyms-list-react", "economist.com-unlocked", "Improve-Codeforces", "flutter-banking-app", "Meditech-Healthcare", "CPU-Scheduling-APP-React-Native"],
-            interests: ["Software Engineering", "Deep Learning", "Computer Vision"],
-            languages: ["Javascript", "C++", "Java", "Dart"],
+            root: ["projects", "skills", "interests", "links"],
+            skills: ["Software engineering", "AI and cloud systems", "Developer tools"],
+            projects: ["ubuntu-web", "Public repositories: github.com/yuxiaoli"],
+            interests: ["Practical software", "AI research", "International technology collaboration"],
+            links: ["vectorindex.cloud", "github.com/yuxiaoli", "linkedin.com/in/yuxiaoli"],
         };
         this.state = {
             terminal: [],
@@ -56,7 +53,7 @@ export class Terminal extends Component {
             <React.Fragment key={id}>
                 <div className="flex w-full h-5">
                     <div className="flex">
-                        <div className=" text-ubt-green">vivek@Dell</div>
+                        <div className=" text-ubt-green">sean@ubuntu</div>
                         <div className="text-white mx-px font-medium">:</div>
                         <div className=" text-ubt-blue">{this.current_directory}</div>
                         <div className="text-white mx-px font-medium mr-1">$</div>
@@ -177,6 +174,7 @@ export class Terminal extends Component {
     handleCommands = (command, rowId) => {
         let words = command.split(' ').filter(Boolean);
         let main = words[0];
+        let displayCommand = this.xss(main);
         words.shift()
         let result = "";
         let rest = words.join(" ");
@@ -198,7 +196,7 @@ export class Terminal extends Component {
                     break;
                 }
 
-                if (this.child_directories[this.curr_dir_name].includes(rest)) {
+                if (this.child_directories[this.curr_dir_name].includes(rest) && Object.prototype.hasOwnProperty.call(this.child_directories, rest)) {
                     this.current_directory += "/" + rest;
                     this.curr_dir_name = rest;
                 }
@@ -207,7 +205,7 @@ export class Terminal extends Component {
                     break;
                 }
                 else {
-                    result = `bash: cd: ${words}: No such file or directory`;
+                    result = `bash: cd: ${this.xss(words.join(' '))}: No such file or directory`;
                 }
                 break;
             case "ls":
@@ -218,7 +216,7 @@ export class Terminal extends Component {
                     result = "too many arguments, arguments must be <1.";
                     break;
                 }
-                if (target in this.child_directories) {
+                if (Object.prototype.hasOwnProperty.call(this.child_directories, target) && Array.isArray(this.child_directories[target])) {
                     result = this.childDirectories(target).join("");
                 }
                 else if (target === "personal-documents") {
@@ -226,7 +224,7 @@ export class Terminal extends Component {
                     break;
                 }
                 else {
-                    result = `ls: cannot access '${words}': No such file or directory                    `;
+                    result = `ls: cannot access '${this.xss(words.join(' '))}': No such file or directory`;
                 }
                 break;
             case "mkdir":
@@ -239,13 +237,13 @@ export class Terminal extends Component {
                 break;
             case "pwd":
                 let str = this.current_directory;
-                result = str.replace("~", "/home/vivek")
+                result = str.replace("~", "/home/sean")
                 break;
             case "code":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("vscode");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands:[ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands:[ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help]";
                 }
                 break;
             case "echo":
@@ -255,56 +253,59 @@ export class Terminal extends Component {
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("spotify");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "chrome":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("chrome");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "todoist":
                 if (words[0] === "." || words.length === 0) {
-                    this.props.openApp("todo-ist");
+                    this.props.openApp("gedit");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "trash":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("trash");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
+            case "about":
+            case "about-sean":
             case "about-vivek":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("about-vivek");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "terminal":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("terminal");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "settings":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("settings");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
+            case "notes":
             case "sendmsg":
                 if (words[0] === "." || words.length === 0) {
                     this.props.openApp("gedit");
                 } else {
-                    result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                    result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
                 }
                 break;
             case "clear":
@@ -315,15 +316,13 @@ export class Terminal extends Component {
                 return;
             case "sudo":
 
-                ReactGA.event({
-                    category: "Sudo Access",
-                    action: "lol",
-                });
-
-                result = "<img class=' w-2/5' src='./images/memes/used-sudo-command.webp' />";
+                result = "This is a simulated terminal. Administrator commands are unavailable.";
+                break;
+            case "help":
+                result = "Simulated terminal. Available commands: cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings.";
                 break;
             default:
-                result = "Command '" + main + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about-vivek, todoist, trash, settings, sendmsg ]";
+                result = "Command '" + displayCommand + "' not found, or not yet implemented.<br>Available Commands: [ cd, ls, pwd, echo, clear, exit, mkdir, code, spotify, chrome, about, notes, trash, settings, help ]";
         }
         document.getElementById(`row-result-${rowId}`).innerHTML = result;
         this.appendTerminalRow();
@@ -334,17 +333,17 @@ export class Terminal extends Component {
         return str.split('').map(char => {
             switch (char) {
                 case '&':
-                    return '&amp';
+                    return '&amp;';
                 case '<':
-                    return '&lt';
+                    return '&lt;';
                 case '>':
-                    return '&gt';
+                    return '&gt;';
                 case '"':
-                    return '&quot';
+                    return '&quot;';
                 case "'":
-                    return '&#x27';
+                    return '&#x27;';
                 case '/':
-                    return '&#x2F';
+                    return '&#x2F;';
                 default:
                     return char;
             }

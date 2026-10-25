@@ -1,0 +1,15 @@
+# Implementation and verification, 2026-10-25
+
+Scope: personalized Ubuntu project site only. No boot-loader or other OS repositories edited.
+
+Upstream: vivek9patel/vivek9patel.github.io master c4f1eff15aaba964fb0ad807afb4e233c33364dd, MIT copyright (c) 2020 vivek9patel. Account repository inventory showed no existing Ubuntu fork. Created true fork yuxiaoli/ubuntu-web; remote develop default verified. Master retained at upstream SHA, unchanged. Pages build_type workflow, cname null, project URL https://yuxiaoli.github.io/ubuntu-web/.
+
+Untouched upstream build tested in separate detached worktree with frozen yarn.lock. Dependencies install successfully; build fails collecting / with `Require GA_MEASUREMENT_ID` when no inherited analytics ID is supplied. The personalized build removes all analytics initialization/calls and the inherited EmailJS contact UI/configuration. No private CV files copied; profile facts corroborated against public GitHub profile.
+
+Implemented: About Sean/public links/credits; meaningful local Notes plus Download; local browser bookmarks/history retention and HTTP(S) validation; embedding fallback links; repaired empty VSCode/Spotify launcher returns; personalized terminal, context menu, metadata and startup links; non-destructive storage behavior; touch app launch/keyboard shortcuts/mobile window bounds. Runtime QA caught upstream clock server/client hydration mismatches; deterministic clock initial render fixed them.
+
+Validation completed before deploy: 3 node:test cases (notes preserved including empty text, URL validation, saved-browser read without mutation); failing-to-passing coverage observed. Next production build + static export pass. Original LICENSE and yarn.lock unchanged. Browser checks use fresh isolated Chrome contexts and a loopback static server, with screenshots and JSON results saved outside source in ../.qa/evidence. Live verification follows deployment and will be recorded in the final delivery record.
+
+Known limits: simulated desktop/terminal, not an actual operating system. External sites may block iframe embedding or need sign-in; open-in-new-tab links remain visible. Notes stay in this browser/origin/device and are not a backup service. Existing locked Next.js 13 dependencies are retained; production hosts only static export, no Next server. Build warns about old Browserslist data, experimental worker count, and font optimization when Google Fonts cannot be fetched; system sans-serif fallback works.
+
+Local browser acceptance passed: fresh anonymous Chrome desktop at 1440x1000; startup, About/credits, Notes edit/close/reopen/reload persistence, terminal pwd, calculator 2+2, browser URL and fallback, VSCode/Spotify frame and fallback, settings and trash. 390x844 touch Notes and About passed with windows within viewport. Cross-origin loopback iframe harness could boot desktop and edit Notes. Zero own asset failures or uncaught page errors. Screenshots visually reviewed. Additional review fixed inherited-property terminal listing edge case. Original license and lockfile remain unchanged.

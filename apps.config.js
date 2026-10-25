@@ -11,7 +11,7 @@ import { displayTerminalCalc } from './components/apps/calc';
 const apps = [
     {
         id: "chrome",
-        title: "Google Chrome",
+        title: "Browser",
         icon: './themes/Yaru/apps/chrome.png',
         disabled: false,
         favourite: true,
@@ -29,7 +29,7 @@ const apps = [
     },
     {
         id: "about-vivek",
-        title: "About Vivek",
+        title: "About Sean",
         icon: './themes/Yaru/system/user-home.png',
         disabled: false,
         favourite: true,
@@ -83,7 +83,7 @@ const apps = [
     },
     {
         id: "gedit",
-        title: "Contact Me",
+        title: "Notes",
         icon: './themes/Yaru/apps/gedit.png',
         disabled: false,
         favourite: false,
@@ -98,18 +98,18 @@ const apps = [
         favourite: false,
         desktop_shortcut: true,
         isExternalApp: true,
-        url: "https://github.com/vivek9patel",
+        url: "https://github.com/yuxiaoli",
         screen: () => {},
     },
     {
         id: "tars",
-        title: "Ask Tars",
+        title: "Homepage",
         icon: './themes/Yaru/apps/tars.svg',
         disabled: false,
         favourite: false,
         desktop_shortcut: true,
         isExternalApp: true,
-        url: "https://www.vivek9patel.com/tars"
+        url: "https://vectorindex.cloud"
     },
 ]
 
