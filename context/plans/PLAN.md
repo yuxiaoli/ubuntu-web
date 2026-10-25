@@ -32,4 +32,4 @@ Requested 2026-10-25. Canonical active plan.
 - [x] Fork and branch/default verified.
 - [x] Personalization and static build implemented.
 - [x] Local checks and runtime verified.
-- [ ] Commit pushed, Pages deployed and live checks completed.
+- [x] Commit pushed, Pages deployed and live checks completed.

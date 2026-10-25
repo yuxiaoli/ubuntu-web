@@ -1,0 +1,11 @@
+{
+  "url": "https://yuxiaoli.github.io/ubuntu-web/",
+  "label": "live",
+  "desktop": "startup/about/credits/notes persistence/reload/terminal pwd/calculator/browser/VSCode/Spotify/settings/trash passed",
+  "mobile": "390x844 touch Notes and About visible within viewport",
+  "iframe": "cross-origin harness embedding and Notes interaction passed",
+  "ownAssetFailures": [],
+  "pageErrors": [],
+  "mobileErrors": [],
+  "checkedAt": "2026-10-25T15:24:20.059Z"
+}
