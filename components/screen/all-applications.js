@@ -21,7 +21,7 @@ export class AllApplications extends React.Component {
         this.setState({
             query: e.target.value,
             apps: e.target.value === "" || e.target.value === null ?
-                this.props.apps : this.state.apps.filter(
+                this.props.apps : this.props.apps.filter(
                     (app) => app.title.toLowerCase().includes(e.target.value.toLowerCase())
                 )
         })
@@ -50,7 +50,9 @@ export class AllApplications extends React.Component {
                 name: app.title,
                 id: app.id,
                 icon: app.icon,
-                openApp: this.props.openApp
+                openApp: this.props.openApp,
+                isExternalApp: app.isExternalApp,
+                url: app.url
             }
 
             appsJsx.push(

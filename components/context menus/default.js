@@ -1,38 +1,19 @@
-import React from 'react'
+import React from 'react';
 
-function DefaultMenu(props) {
-    return (
-        <div id="default-menu" className={(props.active ? " block " : " hidden ") + " cursor-default w-52 context-menu-bg border text-left border-gray-900 rounded text-white py-4 absolute z-50 text-sm"}>
-            <a rel="noreferrer noopener" href="https://github.com/vivek9patel/vivek9patel.github.io" target="_blank" className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">🌟</span> <span className="ml-2">Star this Project</span>
-            </a>
-            <a rel="noreferrer noopener" href="https://github.com/vivek9patel/vivek9patel.github.io/issues" target="_blank" className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">❗</span> <span className="ml-2">Report bugs</span>
-            </a>
-            <Devider />
-            <a rel="noreferrer noopener" href="https://www.linkedin.com/in/vivek9patel/" target="_blank" className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">🙋‍♂️</span> <span className="ml-2">Follow on <strong>Linkedin</strong></span>
-            </a>
-            <a rel="noreferrer noopener" href="https://github.com/vivek9patel" target="_blank" className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">🤝</span> <span className="ml-2">Follow on <strong>Github</strong></span>
-            </a>
-            <a rel="noreferrer noopener" href="mailto:vivek.p9737@gmail.com" target="_blank" className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">📥</span> <span className="ml-2">Contact Me</span>
-            </a>
-            <Devider />
-            <div onClick={() => { localStorage.clear(); window.location.reload() }} className="w-full block cursor-default py-0.5 hover:bg-ub-warm-grey hover:bg-opacity-20 mb-1.5">
-                <span className="ml-5">🧹</span> <span className="ml-2">Reset Ubuntu</span>
-            </div>
-        </div>
-    )
-}
+const links = [
+    ['Desktop source', 'https://github.com/yuxiaoli/ubuntu-web'],
+    ['Report a desktop issue', 'https://github.com/yuxiaoli/ubuntu-web/issues'],
+    ['Vector Index', 'https://vectorindex.cloud'],
+    ['Sean on GitHub', 'https://github.com/yuxiaoli'],
+    ['LinkedIn', 'https://www.linkedin.com/in/yuxiaoli'],
+    ['Original project | Vivek Patel', 'https://github.com/vivek9patel/vivek9patel.github.io'],
+];
 
-function Devider() {
+export default function DefaultMenu(props) {
     return (
-        <div className="flex justify-center w-full">
-            <div className=" border-t border-gray-900 py-1 w-2/5"></div>
+        <div id="default-menu" className={(props.active ? ' block ' : ' hidden ') + 'cursor-default w-56 context-menu-bg border text-left border-gray-900 rounded text-white py-3 absolute z-50 text-sm'}>
+            {links.map(([label, href]) => <a key={href} href={href} target="_blank" rel="noreferrer noopener" className="block px-4 py-1.5 hover:bg-ub-warm-grey focus:bg-ub-warm-grey">{label}</a>)}
+            <div className="border-t border-gray-900 mt-2 pt-2 px-4 text-xs text-gray-400">Preferences and notes stay in this browser.</div>
         </div>
     );
 }
-
-export default DefaultMenu

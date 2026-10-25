@@ -1,63 +1,44 @@
-# Web simulation of UbuntuOS
+# Sean's Ubuntu desktop
 
-This is a personal portfolio website of theme Ubuntu 20.04, made using Next.js & tailwind CSS.
-If you want to edit this. Clone this project and edit the files in `/src/components`.
+A personalized Ubuntu 20.04 web simulation for Sean (Yuxiao Li), forked from [Vivek Patel's original project](https://github.com/vivek9patel/vivek9patel.github.io).
 
-To run this on localhost
-type `npm start` and when u are done coding type `npm run build` to build your app.
+- Live project site: https://yuxiaoli.github.io/ubuntu-web/
+- Homepage: https://vectorindex.cloud
+- GitHub: https://github.com/yuxiaoli
 
-_NOTE: if you have yarn just replace `npm start` and `npm run build` with `yarn start` and `yarn build`._
+## Development
 
-<a href="https://www.buymeacoffee.com/vivek9patel" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 140px !important;" ></a>
+Use Node 22 or newer and Yarn Classic 1.22.22. The existing yarn.lock is authoritative.
 
-### To make the contact form work
-
-- Create a account in [emailjs](https://www.emailjs.com/) create also new Outlook or Gmail account to be able
-  to send email.
-- Create a new service, select and log in to your newly created outlook or gmail account on EmailJS.
-- Go back to the dashboard and get the Service ID copy it.
-- Create a .env file in your root folder and put
-
+```sh
+yarn install --frozen-lockfile
+yarn dev
+# Open http://localhost:3000/ubuntu-web/
+yarn test
+yarn build
+# Static output is in out/, mounted at /ubuntu-web/.
 ```
 
-NEXT_PUBLIC_USER_ID = 'YOUR_USER_ID'
-NEXT_PUBLIC_TEMPLATE_ID = 'template_fqqqb9g'
-NEXT_PUBLIC_SERVICE_ID = 'YOUR_SERVICE_ID'
+The locked Next.js 13.1.2 stack uses `next build && next export`. `next start` previews the Next build but is not the production hosting model. Production is a static GitHub Pages export with no server, credentials or contact service.
 
-```
+## Branches and deployment
 
-into it. Replace \*your user id and your service ID with your values in your EmailJS service.
+`develop` is the default and customization branch. Preserve `master` (and any `main`) as read-only upstream caches, synchronized manually by the user only. Do not merge personalization into them or add automatic upstream sync.
 
-## Star History
+The Pages workflow runs only on pushes to `develop` or explicit dispatch. It tests, builds, stamps `build-info.json` with the actual source SHA, uploads the export, and deploys to the `github-pages` environment. It does not modify an account-root Pages site, custom domain, or another OS repository.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vivek9patel/vivek9patel.github.io&type=Date)](https://star-history.com/#vivek9patel/vivek9patel.github.io&Date)
+## Apps and saved data
 
-## This project was made using Create Next App! Here is the scripts that u can run.
+- About Sean: public professional context, links and original author/license credits.
+- Notes: editable local text, automatic browser storage and Download backup. Existing saved text, including empty notes, is preserved; starter content is used only when no note exists.
+- Browser: local bookmarks and validated HTTP(S) addresses. Prior browser history keys remain intact. Each external view has a visible new-tab fallback because sites can block embedding.
+- Terminal and calculator: simulations. The terminal supports `help`, `pwd`, `ls`, `cd`, `echo`, `mkdir`, `clear`, `exit`, and app shortcuts. It is not a real shell.
+- Settings, Trash, VSCode and Spotify retain the original app roles. External apps depend on their providers and may require sign-in.
 
-### `npm start`
+Notes use `ubuntu-sean-notes-v1`. Existing desktop/background/folder/browser/About keys are retained. Data stays on the current browser/origin and is not synchronized. This fork does not initialize inherited analytics or EmailJS services. No private CV files were copied or published.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Provenance and license
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Original project: [vivek9patel/vivek9patel.github.io](https://github.com/vivek9patel/vivek9patel.github.io), upstream master `c4f1eff15aaba964fb0ad807afb4e233c33364dd`. Original code is MIT licensed, copyright (c) 2020 vivek9patel; [LICENSE](LICENSE) is retained verbatim. Ubuntu and application names/artwork belong to their respective owners. Personalization is maintained in this fork.
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributiors who wants to make this website better can make contribution,which will be **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Added some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+See `context/plans/PLAN.md` for requested scope and `context/logs/` for verified delivery evidence and limitations.

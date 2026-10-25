@@ -201,3 +201,20 @@ input[type=range].ubuntu-slider::-webkit-slider-thumb {
 .list-arrow {
     list-style: "⇀";
 }
+/* Keep the desktop and app controls reachable on narrow touch screens. */
+html, body, #__next { width: 100%; height: 100%; overflow: hidden; }
+#monitor-screen { height: 100dvh; }
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible { outline: 2px solid #f6a073; outline-offset: 2px; }
+@media (max-width: 640px) {
+    .main-window {
+        left: 52px !important;
+        top: 0 !important;
+        width: calc(100% - 52px) !important;
+        height: calc(100dvh - 32px) !important;
+        transform: translate(0, 0) !important;
+        border-radius: 0;
+    }
+    .main-window .windowMainScreen { min-height: 0; }
+    .main-window input, .main-window textarea { font-size: 16px; }
+    .main-window .window-x-border, .main-window .window-y-border { display: none; }
+}
