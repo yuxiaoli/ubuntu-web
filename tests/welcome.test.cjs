@@ -1,7 +1,11 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
-const { STARTER_NOTES } = require('../lib/notes-storage.cjs');
+const baseNotes = require('../lib/notes-storage.cjs');
+const { STARTER_NOTES } = baseNotes;
+const SYNTHETIC_PREVIOUS = 'Synthetic obsolete sample\n\nWith a second paragraph.\n';
+const synthetic = baseNotes.createNotesStorage({ byteLength: Buffer.byteLength(SYNTHETIC_PREVIOUS), sha256: createHash('sha256').update(SYNTHETIC_PREVIOUS).digest('hex') });
+const testNotes = { ...baseNotes, ...synthetic, SYNTHETIC_PREVIOUS };
 
 test('the starter is the exact approved UTF-8 Git blob, including all six paragraphs and final link', () => {
   const bytes = Buffer.from(STARTER_NOTES, 'utf8');
@@ -20,39 +24,38 @@ function memoryStorage(entries = []) {
 }
 
 test('the exact previous default migrates once and later intentional saves of that text survive', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, WELCOME_VERSION, PREVIOUS_STARTER_NOTES, loadNotes, saveNotes } = _welcomeHistorySyntheticNotes(require('../lib/notes-storage.cjs'));
-  assert.equal(createHash('sha256').update(PREVIOUS_STARTER_NOTES).digest('hex'), "62ea45ad225f6f070ceec62d7002c5f92ad9386c1ab18d5a40cafa4f0ce63960");
-  const storage = memoryStorage([[NOTES_KEY, PREVIOUS_STARTER_NOTES]]);
+  const { NOTES_KEY, WELCOME_VERSION_KEY, WELCOME_VERSION, SYNTHETIC_PREVIOUS, loadNotes, saveNotes } = testNotes;
+  const storage = memoryStorage([[NOTES_KEY, SYNTHETIC_PREVIOUS]]);
   assert.equal(loadNotes(storage), STARTER_NOTES);
   assert.equal(storage.data.get(NOTES_KEY), STARTER_NOTES);
   assert.equal(storage.data.get(WELCOME_VERSION_KEY), WELCOME_VERSION);
   storage.writes.length = 0;
   assert.equal(loadNotes(storage), STARTER_NOTES);
   assert.equal(storage.writes.length, 0);
-  saveNotes(storage, PREVIOUS_STARTER_NOTES);
+  saveNotes(storage, SYNTHETIC_PREVIOUS);
   storage.writes.length = 0;
-  assert.equal(loadNotes(storage), PREVIOUS_STARTER_NOTES);
+  assert.equal(loadNotes(storage), SYNTHETIC_PREVIOUS);
   assert.equal(storage.writes.length, 0);
 });
 
 test('failed migration writes preserve readable legacy notes and a recorded attempt is not repeated', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, PREVIOUS_STARTER_NOTES, loadNotes } = _welcomeHistorySyntheticNotes(require('../lib/notes-storage.cjs'));
+  const { NOTES_KEY, WELCOME_VERSION_KEY, SYNTHETIC_PREVIOUS, loadNotes } = testNotes;
   for (const blockedKey of [WELCOME_VERSION_KEY, NOTES_KEY]) {
-    const storage = memoryStorage([[NOTES_KEY, PREVIOUS_STARTER_NOTES]]);
+    const storage = memoryStorage([[NOTES_KEY, SYNTHETIC_PREVIOUS]]);
     const setItem = storage.setItem;
     storage.setItem = (key, value) => { if (key === blockedKey) throw new Error('Storage unavailable'); setItem(key, value); };
-    assert.equal(loadNotes(storage), PREVIOUS_STARTER_NOTES);
-    assert.equal(storage.data.get(NOTES_KEY), PREVIOUS_STARTER_NOTES);
+    assert.equal(loadNotes(storage), SYNTHETIC_PREVIOUS);
+    assert.equal(storage.data.get(NOTES_KEY), SYNTHETIC_PREVIOUS);
     if (blockedKey === NOTES_KEY) {
       storage.writes.length = 0;
-      assert.equal(loadNotes(storage), PREVIOUS_STARTER_NOTES);
+      assert.equal(loadNotes(storage), SYNTHETIC_PREVIOUS);
       assert.equal(storage.writes.length, 0);
     }
   }
 });
 
 test('a handled note whose key was removed stays absent instead of recreating the welcome', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, WELCOME_VERSION, loadNotes } = require('../lib/notes-storage.cjs');
+  const { NOTES_KEY, WELCOME_VERSION_KEY, WELCOME_VERSION, loadNotes } = testNotes;
   const storage = memoryStorage([[WELCOME_VERSION_KEY, WELCOME_VERSION], ['renamed-personal-note', 'My preserved text']]);
   assert.equal(loadNotes(storage), '');
   assert.equal(storage.data.has(NOTES_KEY), false);
@@ -61,13 +64,13 @@ test('a handled note whose key was removed stays absent instead of recreating th
 });
 
 test('fresh storage is read-only and edited, empty, marked and renamed-like values remain untouched', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, PREVIOUS_STARTER_NOTES, loadNotes } = _welcomeHistorySyntheticNotes(require('../lib/notes-storage.cjs'));
+  const { NOTES_KEY, WELCOME_VERSION_KEY, SYNTHETIC_PREVIOUS, loadNotes } = testNotes;
   const fresh = memoryStorage([['renamed-note', 'Keep this document']]);
   assert.equal(loadNotes(fresh), STARTER_NOTES);
   assert.equal(fresh.data.has(NOTES_KEY), false);
   assert.equal(fresh.data.get('renamed-note'), 'Keep this document');
   assert.equal(fresh.writes.length, 0);
-  for (const value of ['', 'My edited notes', PREVIOUS_STARTER_NOTES + ' ', PREVIOUS_STARTER_NOTES.slice(0, -1), PREVIOUS_STARTER_NOTES.replace(/\n/g, '\r\n'), 'Renamed note\n' + PREVIOUS_STARTER_NOTES]) {
+  for (const value of ['', 'My edited notes', SYNTHETIC_PREVIOUS + ' ', SYNTHETIC_PREVIOUS.slice(0, -1), SYNTHETIC_PREVIOUS.replace(/\n/g, '\r\n'), 'Renamed note\n' + SYNTHETIC_PREVIOUS]) {
     const storage = memoryStorage([[NOTES_KEY, value], ['other-os-note', 'Keep']]);
     assert.equal(loadNotes(storage), value);
     assert.equal(storage.data.get(NOTES_KEY), value);
@@ -75,15 +78,15 @@ test('fresh storage is read-only and edited, empty, marked and renamed-like valu
     assert.equal(storage.writes.length, 0);
   }
   for (const marker of ['already-handled', '']) {
-    const storage = memoryStorage([[NOTES_KEY, PREVIOUS_STARTER_NOTES], [WELCOME_VERSION_KEY, marker]]);
-    assert.equal(loadNotes(storage), PREVIOUS_STARTER_NOTES);
+    const storage = memoryStorage([[NOTES_KEY, SYNTHETIC_PREVIOUS], [WELCOME_VERSION_KEY, marker]]);
+    assert.equal(loadNotes(storage), SYNTHETIC_PREVIOUS);
     assert.equal(storage.writes.length, 0);
   }
 });
 
 test('storage read errors and failed explicit saves cannot replace readable user text', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, PREVIOUS_STARTER_NOTES, loadNotes, saveNotes } = _welcomeHistorySyntheticNotes(require('../lib/notes-storage.cjs'));
-  for (const value of [PREVIOUS_STARTER_NOTES, 'User text', '']) {
+  const { NOTES_KEY, WELCOME_VERSION_KEY, SYNTHETIC_PREVIOUS, loadNotes, saveNotes } = testNotes;
+  for (const value of [SYNTHETIC_PREVIOUS, 'User text', '']) {
     const storage = memoryStorage([[NOTES_KEY, value]]);
     const getItem = storage.getItem;
     storage.getItem = key => { if (key === WELCOME_VERSION_KEY) throw new Error('Metadata read blocked'); return getItem(key); };
@@ -105,9 +108,9 @@ test('storage read errors and failed explicit saves cannot replace readable user
 });
 
 test('migration rechecks the note after metadata changes so intervening edits, empties and removals survive', () => {
-  const { NOTES_KEY, WELCOME_VERSION_KEY, PREVIOUS_STARTER_NOTES, loadNotes } = _welcomeHistorySyntheticNotes(require('../lib/notes-storage.cjs'));
+  const { NOTES_KEY, WELCOME_VERSION_KEY, SYNTHETIC_PREVIOUS, loadNotes } = testNotes;
   for (const changed of ['Another tab edited this', '', null]) {
-    const storage = memoryStorage([[NOTES_KEY, PREVIOUS_STARTER_NOTES]]);
+    const storage = memoryStorage([[NOTES_KEY, SYNTHETIC_PREVIOUS]]);
     const setItem = storage.setItem;
     storage.setItem = (key, value) => {
       setItem(key, value);
@@ -121,9 +124,3 @@ test('migration rechecks the note after metadata changes so intervening edits, e
     assert.equal(storage.writes.filter(([key]) => key === NOTES_KEY).length, 0);
   }
 });
-
-function _welcomeHistorySyntheticNotes(base) {
-  const previous = "Synthetic legacy fixture.\nPreserve independent edits.";
-  const fingerprint = { byteLength: Buffer.byteLength(previous, "utf8"), sha256: createHash("sha256").update(previous).digest("hex") };
-  return { ...base, ...base.createNotesStorage(fingerprint), PREVIOUS_STARTER_NOTES: previous };
-}

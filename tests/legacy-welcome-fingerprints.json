@@ -1,0 +1,12 @@
+[
+  {
+    "label": "legacy-paragraph-1",
+    "characters": 32,
+    "sha256": "a1d09b04e0aa56294b82a71defca6cc21ea6288fe08ecf698631b72e8b3046e8"
+  },
+  {
+    "label": "legacy-paragraph-2",
+    "characters": 80,
+    "sha256": "12f58d0cba1a6f6e9ed855f8d51b6fc442d3fa4032c29d6203b6e8963d918730"
+  }
+]
