@@ -33,3 +33,27 @@ Requested 2026-10-25. Canonical active plan.
 - [x] Personalization and static build implemented.
 - [x] Local checks and runtime verified.
 - [x] Commit pushed, Pages deployed and live checks completed.
+
+## Approved welcome rollout - 2026-10-27
+
+Scope is ubuntu-web only. Task recorded in DOT_NOTES at
+`576d1f662328419937b0cc690ac4e73c4f149f52`. Use every UTF-8 byte of
+`projects/repos/boot-loader/welcome.md` at `bb681b8fd0085af3cc15ef02e6da1b955404e5ce`,
+Git blob `fe7e9edba1d4cbbe07d44e43dea42bd5e3f234b7` (525 bytes, six paragraphs,
+no trailing newline). Keep the final Keep exploring link and separate upstream credits.
+
+1. Recheck clean checkout, latest remote develop, instructions and existing rollout inventory.
+   Create feature/ubuntu-welcome-rollout from current origin/develop; no main/master writes.
+2. Replace only the previous Notes starter. Keep ubuntu-sean-notes-v1 and all user-edited or
+   empty strings. Add one-time versioned recognition of the exact previous default only.
+   Preserve unknown storage keys and missing values; do not invent rename/delete support.
+3. Test exact source bytes/hash, fresh/legacy/edited/empty/missing/renamed-like storage,
+   idempotence and storage errors. Build the existing static export and stamp its source SHA.
+4. Open a draft PR to develop, review its substantive diff and checks, then merge normally
+   under the granted rollout approval. Respect any platform protections and required reviews.
+5. Deploy the actual merged develop commit through the existing Pages workflow. Verify public
+   build-info and compiled default text plus persistence behavior through noninteractive
+   unit/DOM/HTTP checks only. No UI or user browser control, credentials, other repos,
+   history rewrites, force pushes, or G:/H: storage.
+
+Progress: preflight, implementation, 10 regression tests and static build/export pass. Independent review identified an intervening-change gap; a final equality recheck and failing-to-passing regression preserve intervening edits/empty/removal. The rollout PR records final review, merge and deployment evidence for its exact commits; this change authorizes no browser/UI tests.
