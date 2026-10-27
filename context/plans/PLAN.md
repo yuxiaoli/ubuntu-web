@@ -57,3 +57,25 @@ no trailing newline). Keep the final Keep exploring link and separate upstream c
    history rewrites, force pushes, or G:/H: storage.
 
 Progress: preflight, implementation, 10 regression tests and static build/export pass. Independent review identified an intervening-change gap; a final equality recheck and failing-to-passing regression preserve intervening edits/empty/removal. The rollout PR records final review, merge and deployment evidence for its exact commits; this change authorizes no browser/UI tests.
+
+## Remove legacy plaintext migration data - 2026-10-27
+
+Follow-up scope: ubuntu-web current source and deployed assets only. History cleanup remains
+separately pending scoped planning/backups; no history rewrite or master/main mutation here.
+
+1. From latest origin/develop, replace the old welcome literal and export with a one-way
+   SHA-256 + exact UTF-8 byte-length detector. Keep the synchronous storage API and UI.
+   Use a pinned browser-compatible SHA-256 implementation instead of introducing async UI
+   behavior or implementing a new hash algorithm.
+2. Preserve the same note key/version, marker ordering, no-write absence, edited/empty data,
+   failure handling and final pre-write recheck. Tests use synthetic fingerprint metadata,
+   not a retained plaintext/encoded/compressed copy of the old biography.
+3. Verify a real legacy-positive case with a disposable local fixture, then delete that
+   fixture. Verify canonical welcome bytes remain unchanged. Scan the complete static export
+   and served current text assets for old biography phrases without retaining them in source.
+4. Independent review, draft PR/checks/normal merge to develop, deploy the exact merge commit
+   with the existing Pages workflow, verify build-info/current assets and migration safety.
+   Use noninteractive tests/HTTP only; no user browser control, other repositories, credentials,
+   force pushes, history rewrite, G:/H: writes or removal of upstream credits/licenses.
+
+Final review, merge and deployment evidence will be recorded in the follow-up PR.

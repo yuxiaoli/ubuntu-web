@@ -30,12 +30,14 @@ The Pages workflow runs only on pushes to `develop` or explicit dispatch. It tes
 ## Apps and saved data
 
 - About Sean: public professional context, links and original author/license credits.
-- Notes: editable local text, automatic browser storage and Download backup. Existing saved text, including empty notes, is preserved. The approved welcome is used for fresh storage; only the byte-exact previous starter is eligible for the one-time migration.
+- Notes: editable local text, automatic browser storage and Download backup. Existing saved text, including empty notes, is preserved. The approved welcome is used for fresh storage; only a matching exact UTF-8 byte length and SHA-256 fingerprint of the previous starter is eligible for the one-time migration.
 - Browser: local bookmarks and validated HTTP(S) addresses. Prior browser history keys remain intact. Each external view has a visible new-tab fallback because sites can block embedding.
 - Terminal and calculator: simulations. The terminal supports `help`, `pwd`, `ls`, `cd`, `echo`, `mkdir`, `clear`, `exit`, and app shortcuts. It is not a real shell.
 - Settings, Trash, VSCode and Spotify retain the original app roles. External apps depend on their providers and may require sign-in.
 
 Notes use `ubuntu-sean-notes-v1`. The separate `ubuntu-sean-notes-welcome-version` marker records migration or an explicit save. Edited text and empty strings are never migrated. A missing text key with a marker stays absent; fresh missing storage is not seeded. Ubuntu has no document rename/delete model, so an unmarked missing key cannot distinguish first use from external key removal. Unknown keys are never modified. Existing desktop/background/folder/browser/About keys are retained. Data stays on the current browser/origin and is not synchronized. This fork does not initialize inherited analytics or EmailJS services. No private CV files were copied or published.
+
+The migration detector retains only a 550-byte length and SHA-256 digest; it does not embed or export the previous welcome biography. Synchronous SHA-256 uses pinned `@noble/hashes` 1.8.0; its [MIT license](public/licenses/noble-hashes.txt) is included in the static export. Tests use synthetic text and fingerprints, with no reversible old-text fixture in the repository. A real legacy-positive release check may use a disposable local fixture via `UBUNTU_LEGACY_NOTE_FIXTURE`; remove it after verification. This forward change does not rewrite history.
 
 The exact 525-byte welcome comes from DOT_NOTES `projects/repos/boot-loader/welcome.md` at `bb681b8fd0085af3cc15ef02e6da1b955404e5ce`, blob `fe7e9edba1d4cbbe07d44e43dea42bd5e3f234b7`. Its wording, punctuation, six paragraphs and final link remain unchanged. Storage read/write failures preserve readable saved text; localStorage does not provide cross-tab transactions, so migration rechecks immediately before replacement.
 
